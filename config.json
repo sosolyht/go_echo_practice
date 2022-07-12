@@ -1,0 +1,10 @@
+{
+    "db": {
+      "user": "root",       
+      "pass": "951128ty!@",     
+      "host": "localhost",  
+      "port": 3306,
+      "name": "echo"
+    },
+    "is_debug": true
+  }
