@@ -1,23 +1,47 @@
 package database
 
 import (
-	"go_echo/core"
+	"encoding/json"
+	"fmt"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
+	"net/url"
+	"os"
+	"time"
 )
 
-func Connect() (db *gorm.DB) {
-	var logLevel = logger.Info
+var a struct {
+	DB struct {
+		User string `json:"user"`
+		Pass string `json:"pass"`
+		Host string `json:"host"`
+		Port int    `json:"port"`
+		Name string `json:"name"`
+	} `json:"db"`
+	IsDebug bool `json:"is_debug"`
+}
 
-	if !core.IsDebug {
-		logLevel = logger.Warn
+const mysqlData = "%s:%s@tcp(%s:%d)/%s?%s"
+
+func Connect() {
+	file, err := os.Open("config.json")
+
+	if err != nil {
+		panic(err)
 	}
+	var val = make(url.Values)
+	val.Add("charset", "utf8mb4")
+	val.Add("parseTime", "true")
+	val.Add("loc", time.UTC.String())
 
-	db, err := gorm.Open(mysql.Open(core.DBConn), &gorm.Config{
-		Logger:                                   logger.Default.LogMode(logLevel),
-		DisableForeignKeyConstraintWhenMigrating: true,
-	})
+	err = json.NewDecoder(file).Decode(&a)
+
+	data := a.DB
+	DBConn := fmt.Sprintf(mysqlData,
+		data.User, data.Pass, data.Host, data.Port, data.Name, val.Encode())
+
+	db, err := gorm.Open(mysql.Open(DBConn), &gorm.Config{})
+
 	if err != nil {
 		panic(err)
 	}
@@ -31,6 +55,7 @@ func Connect() (db *gorm.DB) {
 	if err != nil {
 		panic(err)
 	}
+
 	sqlDB.SetMaxIdleConns(15)
 	sqlDB.SetMaxOpenConns(15)
 	return
