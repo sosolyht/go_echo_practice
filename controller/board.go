@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/labstack/echo/v4"
 	"go_echo/config"
 	"go_echo/model"
@@ -12,21 +13,38 @@ func GetBoardList() echo.HandlerFunc {
 
 		db := config.DBConnection()
 
-		result := new(model.Board)
-		if err := c.Bind(result); err != nil {
-			return err
-		}
+		result := []model.Board{}
+		//err := c.Bind(result)
+		//if err != nil {
+		//	return err
+		//}
 		db.Find(&result)
 		return c.JSON(http.StatusOK, result)
 	}
 }
 
-func PathParameter() echo.HandlerFunc {
+func BoardTitlePathParameter() echo.HandlerFunc {
 	return func(c echo.Context) error {
 		title := c.Param("title")
 		db := config.DBConnection()
 
-		boards := new(model.Board)
+		boards := model.Board{}
+		err := c.Bind(boards)
+		if err != nil {
+			return err
+		}
+		db.Find(&boards, "title = ?", title)
+		fmt.Println(boards)
+		return c.JSON(http.StatusOK, boards)
+	}
+}
+
+func BoardQueryParameter() echo.HandlerFunc {
+	return func(c echo.Context) error {
+		title := c.QueryParam("title")
+		db := config.DBConnection()
+
+		boards := model.Board{}
 		err := c.Bind(boards)
 		if err != nil {
 			return err
