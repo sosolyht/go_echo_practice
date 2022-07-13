@@ -23,7 +23,7 @@ var a struct {
 
 const mysqlData = "%s:%s@tcp(%s:%d)/%s?charset=utf8mb4&parseTime=True&loc=Local"
 
-func DBConnection() {
+func DBConnection() *gorm.DB {
 	// config.json 파일 오픈
 	file, err := os.Open("config.json")
 
@@ -57,6 +57,5 @@ func DBConnection() {
 	if migrateError != nil {
 		panic(migrateError)
 	}
-
-	return
+	return db
 }

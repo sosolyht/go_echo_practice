@@ -13,7 +13,8 @@ func main() {
 	e.Use(middleware.Logger())
 
 	// Route
-	e.GET("/", controller.GetBoardList)
+	e.GET("/getusers", controller.GetBoardList())
+	e.GET("/boards/:title", controller.PathParameter())
 
 	// Start Server
 	e.Logger.Fatal(e.Start(":8000"))
