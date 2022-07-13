@@ -17,6 +17,9 @@ func main() {
 	e.GET("/boards/:title", controller.BoardTitlePathParameter())
 	e.POST("/boards", controller.CreateBoard)
 
+	// 유저 생성
+	e.POST("/sign-up", controller.SignUp)
+
 	// Start Server
 	e.Logger.Fatal(e.Start(":8000"))
 }

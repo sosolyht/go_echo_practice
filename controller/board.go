@@ -10,29 +10,34 @@ import (
 )
 
 //Board에 대한 구조체 생성
-type RequestBody struct {
+type BoardRequestBody struct {
 	Title   string    `json:"title"`
 	Content string    `json:"content"`
 	UserId  uuid.UUID `json:"user_id"`
 }
 
 func CreateBoard(c echo.Context) error {
-	a := new(RequestBody)
+	var binder BoardRequestBody
+	err := c.Bind(&binder)
+	if err != nil {
+		return badRequestResponseWithLog(c, err)
+	}
 	db := config.DBConnection()
 
-	post := &model.Board{
-		Title:   a.Title,
-		Content: a.Content,
-		UserId:  a.UserId,
+	newBoard := model.Board{
+		Title:   binder.Title,
+		Content: binder.Content,
+		UserId:  binder.UserId,
 	}
+	db.Create(&newBoard)
+	return c.JSON(http.StatusCreated, newBoard)
+}
 
-	err := c.Bind(post)
-	if err != nil {
-		return err
-	}
-
-	db.Create(post)
-	return c.JSON(http.StatusCreated, post)
+func badRequestResponseWithLog(c echo.Context, cause error) error {
+	c.Logger().Debug(cause)
+	return c.JSON(http.StatusBadRequest, echo.Map{
+		"message": cause.Error(),
+	})
 }
 
 func GetBoardList(c echo.Context) error {
@@ -40,10 +45,10 @@ func GetBoardList(c echo.Context) error {
 	db := config.DBConnection()
 
 	result := []model.Board{}
-	//err := c.Bind(result)
-	//if err != nil {
-	//	return err
-	//}
+	err := c.Bind(result)
+	if err != nil {
+		return err
+	}
 	db.Find(&result)
 	return c.JSON(http.StatusOK, result)
 }
