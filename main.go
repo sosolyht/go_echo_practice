@@ -1,7 +1,20 @@
 package main
 
-import "go_echo/server"
+import (
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"go_echo/config"
+	"go_echo/controller"
+)
 
 func main() {
-	server.Init()
+	e := echo.New()
+	config.DBConnection()
+	e.Use(middleware.Logger())
+
+	// Route
+	e.GET("/", controller.GetBoardList)
+
+	// Start Server
+	e.Logger.Fatal(e.Start(":8000"))
 }
