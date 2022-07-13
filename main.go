@@ -13,8 +13,9 @@ func main() {
 	e.Use(middleware.Logger())
 
 	// Route
-	e.GET("/", controller.GetBoardList())
+	e.GET("/", controller.GetBoardList)
 	e.GET("/boards/:title", controller.BoardTitlePathParameter())
+	e.POST("/boards", controller.CreateBoard)
 
 	// Start Server
 	e.Logger.Fatal(e.Start(":8000"))

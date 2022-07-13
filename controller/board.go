@@ -2,25 +2,50 @@ package controller
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"go_echo/config"
 	"go_echo/model"
 	"net/http"
 )
 
-func GetBoardList() echo.HandlerFunc {
-	return func(c echo.Context) error {
+//Board에 대한 구조체 생성
+type RequestBody struct {
+	Title   string    `json:"title"`
+	Content string    `json:"content"`
+	UserId  uuid.UUID `json:"user_id"`
+}
 
-		db := config.DBConnection()
+func CreateBoard(c echo.Context) error {
+	a := new(RequestBody)
+	db := config.DBConnection()
 
-		result := []model.Board{}
-		//err := c.Bind(result)
-		//if err != nil {
-		//	return err
-		//}
-		db.Find(&result)
-		return c.JSON(http.StatusOK, result)
+	post := &model.Board{
+		Title:   a.Title,
+		Content: a.Content,
+		UserId:  a.UserId,
 	}
+
+	err := c.Bind(post)
+	if err != nil {
+		return err
+	}
+
+	db.Create(post)
+	return c.JSON(http.StatusCreated, post)
+}
+
+func GetBoardList(c echo.Context) error {
+
+	db := config.DBConnection()
+
+	result := []model.Board{}
+	//err := c.Bind(result)
+	//if err != nil {
+	//	return err
+	//}
+	db.Find(&result)
+	return c.JSON(http.StatusOK, result)
 }
 
 func BoardTitlePathParameter() echo.HandlerFunc {
@@ -53,14 +78,3 @@ func BoardQueryParameter() echo.HandlerFunc {
 		return c.JSON(http.StatusOK, boards)
 	}
 }
-
-//func GetBoard() ([]model.Board, error) {
-//	db := config.GetDB()
-//	boards := []model.Board{}
-//
-//	if err := db.Find(&boards).Error; err != nil {
-//		return nil, err
-//	}
-//
-//	return boards, nil
-//}
