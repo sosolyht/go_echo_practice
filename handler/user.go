@@ -68,7 +68,7 @@ func SignIn(c echo.Context) error {
 		return echo.ErrUnauthorized
 	}
 
-	genToken, err := util.CreateJWT(user.Username)
+	genToken, err := util.CreateJWT(user.Id)
 	if err != nil {
 		log.Fatal(err)
 	}
