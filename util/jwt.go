@@ -23,7 +23,6 @@ func CreateJWT(userid int) (string, error) {
 	}
 }
 
-//
 //func ParseToken(myToken string) {
 //	token, err := jwt.Parse(myToken, func(token *jwt.Token) (interface{}, error) {
 //		return []byte(mySecretKey), nil

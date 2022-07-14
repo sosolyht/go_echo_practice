@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"go_echo/config"
 	"go_echo/handler"
+	middleware2 "go_echo/middleware"
 )
 
 func main() {
@@ -22,6 +23,9 @@ func main() {
 
 	// 로그인
 	e.POST("/sign-in", handler.SignIn)
+
+	// Test
+	e.GET("/jwt", handler.CheckJWT, middleware2.IsLoggedIn)
 
 	// Start Server
 	e.Logger.Fatal(e.Start(":8000"))

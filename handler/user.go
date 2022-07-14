@@ -6,7 +6,6 @@ import (
 	"go_echo/model"
 	"go_echo/util"
 	"golang.org/x/crypto/bcrypt"
-	"log"
 	"net/http"
 	"time"
 )
@@ -63,6 +62,8 @@ func SignIn(c echo.Context) error {
 	}
 
 	checkHashed := bcrypt.CompareHashAndPassword([]byte(user.Password), plainPassword)
+	// TODO: 체크 했으면 그 다음에 토큰 생성으로
+	// if 체크해시드 그리고 토큰 생성
 
 	if checkHashed != nil {
 		return echo.ErrUnauthorized
@@ -70,7 +71,9 @@ func SignIn(c echo.Context) error {
 
 	genToken, err := util.CreateJWT(user.Id)
 	if err != nil {
-		log.Fatal(err)
+		return c.JSON(http.StatusInternalServerError, echo.Map{
+			"message": "Internal Server Error",
+		})
 	}
 
 	cookie := new(http.Cookie)
