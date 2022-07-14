@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"go_echo/config"
@@ -34,7 +35,6 @@ func CreateBoard(c echo.Context) error {
 }
 
 func GetBoardList(c echo.Context) error {
-
 	db := config.DBConnection()
 
 	result := []model.Board{}
@@ -44,4 +44,22 @@ func GetBoardList(c echo.Context) error {
 	}
 	db.Find(&result)
 	return c.JSON(http.StatusOK, result)
+}
+
+func GetBoardPathParameter(c echo.Context) error {
+	db := config.DBConnection()
+	boards := []model.Board{}
+	title := c.Param("title")
+	db.Select([]string{
+		"id",
+		"title",
+		"content",
+	}).Find(&boards, "Title = ?", title)
+	fmt.Println(len(boards))
+	if len(boards) == 0 {
+		return c.JSON(http.StatusNotFound, echo.Map{
+			"message": "content not found",
+		})
+	}
+	return c.JSON(http.StatusOK, boards)
 }
