@@ -4,6 +4,13 @@ import (
 	"time"
 )
 
+type UserRole string
+
+const (
+	SuperAdmin UserRole = "SUPER_ADMIN"
+	Admin      UserRole = "ADMIN"
+)
+
 type User struct {
 	Id        int       `gorm:"primaryKey;autoIncrement:true"`
 	Username  string    `gorm:"size:320;unique;not null"`

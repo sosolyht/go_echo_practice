@@ -6,7 +6,9 @@ import (
 	"go_echo/model"
 	"go_echo/util"
 	"golang.org/x/crypto/bcrypt"
+	"log"
 	"net/http"
+	"time"
 )
 
 type UserRequestBody struct {
@@ -55,6 +57,7 @@ func SignIn(c echo.Context) error {
 	db := config.DBConnection()
 	result := db.Find(&user, "username=?", user.Username)
 
+	// len(result) == 0 으로도 비슷하게 에러 핸들링 가능할듯??
 	if result.RowsAffected == 0 {
 		return echo.ErrBadRequest
 	}
@@ -65,7 +68,21 @@ func SignIn(c echo.Context) error {
 		return echo.ErrUnauthorized
 	}
 
+	genToken, err := util.CreateJWT(user.Username)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	cookie := new(http.Cookie)
+	cookie.Name = "access-token"
+	cookie.Value = genToken
+	cookie.HttpOnly = true
+	cookie.Secure = true
+	cookie.Expires = time.Now().Add(time.Hour * 24)
+	c.SetCookie(cookie)
+
 	return c.JSON(http.StatusOK, echo.Map{
 		"message": "Success",
+		"token":   genToken,
 	})
 }
