@@ -14,7 +14,7 @@ func main() {
 
 	// Route
 	e.GET("/", controller.GetBoardList)
-	e.GET("/boards/:title", controller.BoardTitlePathParameter())
+	//e.GET("/board/:title", controller.BoardTitlePathParameter)
 	e.POST("/boards", controller.CreateBoard)
 
 	// 유저 생성
