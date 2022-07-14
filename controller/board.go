@@ -2,7 +2,6 @@ package controller
 
 import (
 	"fmt"
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"go_echo/config"
 	"go_echo/model"
@@ -12,9 +11,9 @@ import (
 
 //Board에 대한 구조체 생성
 type BoardRequestBody struct {
-	Title   string    `json:"title"`
-	Content string    `json:"content"`
-	UserId  uuid.UUID `json:"user_id"`
+	Title   string `json:"title"`
+	Content string `json:"content"`
+	UserId  int    `json:"user_id"`
 }
 
 func CreateBoard(c echo.Context) error {

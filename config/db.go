@@ -71,6 +71,7 @@ func DBConnection() *gorm.DB {
 
 	if migrateError != nil {
 		panic(migrateError)
+		fmt.Println(migrateError)
 	}
 	return db
 }

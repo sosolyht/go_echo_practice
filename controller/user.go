@@ -1,18 +1,18 @@
 package controller
 
 import (
-	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"go_echo/config"
 	"go_echo/model"
+	"go_echo/util"
 	"golang.org/x/crypto/bcrypt"
 	"net/http"
 )
 
 type UserRequestBody struct {
-	Id       uuid.UUID `json:"id"`
-	Username string    `json:"username"`
-	Password string    `json:"password"`
+	Id       int    `json:"id"`
+	Username string `json:"username"`
+	Password string `json:"password"`
 }
 
 func SignUp(c echo.Context) error {
@@ -39,5 +39,33 @@ func SignUp(c echo.Context) error {
 	}
 
 	db.Create(&post)
-	return c.JSON(http.StatusCreated, post)
+	return c.JSON(http.StatusCreated, echo.Map{
+		"message": "success",
+	})
+}
+
+func SignIn(c echo.Context) error {
+	user := model.User{}
+	if err := c.Bind(&user); err != nil {
+		util.BadRequestResponseWithLog(c, err)
+	}
+
+	password := []byte(user.Password)
+
+	db := config.DBConnection()
+	result := db.Find(&user, "username=?", user.Username)
+
+	if result.RowsAffected == 0 {
+		return echo.ErrBadRequest
+	}
+
+	checkHashed := bcrypt.CompareHashAndPassword([]byte(user.Password), password)
+
+	if checkHashed != nil {
+		return echo.ErrUnauthorized
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"message": "Success",
+	})
 }

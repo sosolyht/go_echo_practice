@@ -20,6 +20,9 @@ func main() {
 	// 유저 생성
 	e.POST("/sign-up", controller.SignUp)
 
+	// 로그인
+	e.POST("/sign-in", controller.SignIn)
+
 	// Start Server
 	e.Logger.Fatal(e.Start(":8000"))
 }
