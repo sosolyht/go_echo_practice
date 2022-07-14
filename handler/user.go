@@ -50,7 +50,7 @@ func SignIn(c echo.Context) error {
 		util.BadRequestResponseWithLog(c, err)
 	}
 
-	password := []byte(user.Password)
+	plainPassword := []byte(user.Password)
 
 	db := config.DBConnection()
 	result := db.Find(&user, "username=?", user.Username)
@@ -59,7 +59,7 @@ func SignIn(c echo.Context) error {
 		return echo.ErrBadRequest
 	}
 
-	checkHashed := bcrypt.CompareHashAndPassword([]byte(user.Password), password)
+	checkHashed := bcrypt.CompareHashAndPassword([]byte(user.Password), plainPassword)
 
 	if checkHashed != nil {
 		return echo.ErrUnauthorized
