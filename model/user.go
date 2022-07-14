@@ -1,7 +1,6 @@
 package model
 
 import (
-	"github.com/google/uuid"
 	"time"
 )
 
@@ -12,8 +11,4 @@ type User struct {
 	CreatedAt time.Time `gorm:"type:datetime(6);not null"`
 	UpdatedAt time.Time `gorm:"type:datetime(6);not null"`
 	Board     []Board   `gorm:"foreignKey:UserId"`
-}
-
-func test() {
-	uuid.New()
 }

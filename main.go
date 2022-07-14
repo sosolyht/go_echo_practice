@@ -4,7 +4,7 @@ import (
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"go_echo/config"
-	"go_echo/controller"
+	"go_echo/handler"
 )
 
 func main() {
@@ -13,15 +13,15 @@ func main() {
 	e.Use(middleware.Logger())
 
 	// Route
-	e.GET("/", controller.GetBoardList)
-	e.GET("/board/:title", controller.GetBoardPathParameter)
-	e.POST("/boards", controller.CreateBoard)
+	e.GET("/", handler.GetBoardList)
+	e.GET("/board/:title", handler.GetBoardPathParameter)
+	e.POST("/boards", handler.CreateBoard)
 
 	// 유저 생성
-	e.POST("/sign-up", controller.SignUp)
+	e.POST("/sign-up", handler.SignUp)
 
 	// 로그인
-	e.POST("/sign-in", controller.SignIn)
+	e.POST("/sign-in", handler.SignIn)
 
 	// Start Server
 	e.Logger.Fatal(e.Start(":8000"))

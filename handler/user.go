@@ -1,4 +1,4 @@
-package controller
+package handler
 
 import (
 	"github.com/labstack/echo/v4"
@@ -40,7 +40,7 @@ func SignUp(c echo.Context) error {
 
 	db.Create(&post)
 	return c.JSON(http.StatusCreated, echo.Map{
-		"message": "success",
+		"message": "Success",
 	})
 }
 
