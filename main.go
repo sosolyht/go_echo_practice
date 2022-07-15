@@ -12,6 +12,10 @@ func main() {
 	e := echo.New()
 	config.DBConnection()
 	e.Use(middleware.Logger())
+	e.Use(middleware.CORSWithConfig(middleware.CORSConfig{
+		AllowOrigins: []string{"*"},
+		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
+	}))
 
 	// Route
 	e.GET("/", handler.GetBoardList)
@@ -26,6 +30,10 @@ func main() {
 
 	// Test
 	e.GET("/jwt", handler.CheckJWT, middleware2.IsLoggedIn)
+
+	// s3 test
+	e.Static("/s3", "templates")
+	e.POST("/s3", handler.Upload)
 
 	// Start Server
 	e.Logger.Fatal(e.Start(":8000"))
