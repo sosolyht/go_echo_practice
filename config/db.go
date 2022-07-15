@@ -53,11 +53,11 @@ func DBConnection() *gorm.DB {
 	// 모델 마이그레이션
 	migrateError := db.AutoMigrate(
 		&model.User{},
-		&model.Board{})
+		&model.Board{},
+		&model.Media{})
 
 	if migrateError != nil {
 		panic(migrateError)
-		fmt.Println(migrateError)
 	}
 	return db
 }
