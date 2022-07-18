@@ -28,10 +28,11 @@ func main() {
 	// 로그인
 	e.POST("/sign-in", handler.SignIn)
 
-	// JWT Test
+	// Test
 	e.GET("/jwt", handler.CheckJWT, middleware2.IsLoggedIn)
 
 	// s3 test
+	e.Static("/s3", "templates")
 	e.POST("/s3", handler.Upload)
 
 	// Start Server
