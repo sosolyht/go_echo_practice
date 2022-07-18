@@ -24,6 +24,7 @@ func main() {
 	e.GET("/crud", handler.Get)
 	e.POST("/crud", handler.Post)
 	e.PUT("/crud", handler.Update)
+	e.DELETE("/crud", handler.Delete)
 
 	// 유저 생성
 	e.POST("/sign-up", handler.SignUp)

@@ -69,3 +69,18 @@ func Update(c echo.Context) error {
 		"message": "success",
 	})
 }
+
+func Delete(c echo.Context) error {
+	var binder Media
+	err := c.Bind(&binder)
+	if err != nil {
+		log.Debug(err)
+	}
+	newMedia := model.Media{
+		Id: binder.Id,
+	}
+	db.Delete(&newMedia)
+	return c.JSON(http.StatusOK, echo.Map{
+		"message": "removed",
+	})
+}
