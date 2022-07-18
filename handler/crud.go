@@ -7,6 +7,14 @@ import (
 	"net/http"
 )
 
+type Media struct {
+	Title      string `json:"title"`
+	Size       string `json:"size"`
+	Codec      string `json:"codec"`
+	Duration   string `json:"duration"`
+	Resolution string `json:"resolution"`
+}
+
 var db = config.DBConnection()
 
 func Get(c echo.Context) error {
@@ -17,4 +25,28 @@ func Get(c echo.Context) error {
 	}
 	db.Find(&result)
 	return c.JSON(http.StatusOK, result)
+}
+
+func Post(c echo.Context) error {
+	var binder Media
+	err := c.Bind(&binder)
+	if err != nil {
+		log.Debug(err)
+	}
+
+	newMedia := model.Media{
+		Title:      binder.Title,
+		Size:       binder.Size,
+		Codec:      binder.Codec,
+		Duration:   binder.Duration,
+		Resolution: binder.Resolution,
+	}
+
+	err = db.Create(&newMedia).Error
+	if err != nil {
+		log.Debug(err)
+	}
+	return c.JSON(http.StatusCreated, echo.Map{
+		"message": "success",
+	})
 }
