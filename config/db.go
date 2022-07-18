@@ -40,8 +40,8 @@ func DBConnection() *gorm.DB {
 	var DBConn = fmt.Sprintf(mysqlData,
 		data.User, data.Pass, data.Host, data.Port, data.Name)
 
-	//gorm 의 mysql 드라이버를 이용해 DBConn 으로 연결
-	//Config 의 Logger 를 통한 쿼리 로그
+	// gorm 의 mysql 드라이버를 이용해 DBConn 으로 연결
+	// Config 의 Logger 를 통한 쿼리 로그
 	db, err := gorm.Open(mysql.Open(DBConn), &gorm.Config{
 		Logger: logger.Default.LogMode(logger.Info),
 	})

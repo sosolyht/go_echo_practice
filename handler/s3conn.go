@@ -31,7 +31,6 @@ func Upload(c echo.Context) error {
 	if err != nil {
 		log.Debug(err)
 	}
-	//fmt.Println("result:", result)
 	// result 를 기반으로 UploadResult 구조체에
 	// metadata 추가
 	// 그리고 그 result 를 기반으로 ffprobe 로 메타데이터를 뽑아오고

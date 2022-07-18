@@ -5,7 +5,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"go_echo/config"
 	"go_echo/handler"
-	middleware2 "go_echo/middleware"
+	mw "go_echo/middleware"
 )
 
 func main() {
@@ -17,10 +17,12 @@ func main() {
 		AllowHeaders: []string{echo.HeaderOrigin, echo.HeaderContentType, echo.HeaderAccept},
 	}))
 
-	// Route
+	// Board Route
 	e.GET("/", handler.GetBoardList)
 	e.GET("/board/:title", handler.GetBoardPathParameter)
 	e.POST("/boards", handler.CreateBoard)
+
+	// CRUD Route
 	e.GET("/crud", handler.Get)
 	e.POST("/crud", handler.Post)
 	e.PUT("/crud", handler.Update)
@@ -32,10 +34,10 @@ func main() {
 	// 로그인
 	e.POST("/sign-in", handler.SignIn)
 
-	// Test
-	e.GET("/jwt", handler.CheckJWT, middleware2.IsLoggedIn)
+	// JWT Test
+	e.GET("/jwt", handler.CheckJWT, mw.IsLoggedIn)
 
-	// s3 test
+	// S3 test
 	e.Static("/s3", "templates")
 	e.POST("/s3", handler.Upload)
 
