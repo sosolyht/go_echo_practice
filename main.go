@@ -21,6 +21,7 @@ func main() {
 	e.GET("/", handler.GetBoardList)
 	e.GET("/board/:title", handler.GetBoardPathParameter)
 	e.POST("/boards", handler.CreateBoard)
+	e.GET("/crud", handler.Get)
 
 	// 유저 생성
 	e.POST("/sign-up", handler.SignUp)

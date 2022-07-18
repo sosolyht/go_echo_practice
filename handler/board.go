@@ -3,8 +3,6 @@ package handler
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
-	"go.uber.org/zap"
-	"go_echo/config"
 	"go_echo/model"
 	"go_echo/util"
 	"net/http"
@@ -18,14 +16,12 @@ type BoardRequestBody struct {
 }
 
 func CreateBoard(c echo.Context) error {
-	logger, _ := zap.NewProduction()
 	var binder BoardRequestBody
 	err := c.Bind(&binder)
 	if err != nil {
-		logger.Info("test")
+		log.Debug(err)
 		return util.BadRequestResponseWithLog(c, err)
 	}
-	db := config.DBConnection()
 
 	newBoard := model.Board{
 		Title:   binder.Title,
@@ -38,16 +34,16 @@ func CreateBoard(c echo.Context) error {
 			"message": "internal server error",
 		})
 	}
-	logger.Info("test")
+	log.Debug(err)
 	return c.JSON(http.StatusCreated, newBoard)
 }
 
 func GetBoardList(c echo.Context) error {
-	db := config.DBConnection()
 
 	result := []model.Board{}
 	err := c.Bind(result)
 	if err != nil {
+		log.Debug(err)
 		return err
 	}
 	db.Find(&result)
@@ -55,7 +51,6 @@ func GetBoardList(c echo.Context) error {
 }
 
 func GetBoardPathParameter(c echo.Context) error {
-	db := config.DBConnection()
 	boards := []model.Board{}
 	title := c.Param("title")
 	db.Select([]string{
