@@ -13,10 +13,6 @@ import (
 	"os"
 )
 
-type UploadResult struct {
-	Path string `json:"path"`
-}
-
 func Upload(c echo.Context) error {
 	file, err := c.FormFile("file")
 	if err != nil {
@@ -32,11 +28,17 @@ func Upload(c echo.Context) error {
 	if err != nil {
 		return err
 	}
+	//fmt.Println("result:", result)
+	// result 를 기반으로 UploadResult 구조체에
+	// metadata 추가
+	// 그리고 그 result 를 기반으로 ffprobe 로 메타데이터를 뽑아오고
+	// data 에다가 정보 추가
 
-	data := &UploadResult{
-		Path: result,
-	}
-	return c.JSON(http.StatusOK, data)
+	a := FFprobe(result)
+	return c.JSON(http.StatusOK, echo.Map{
+		"path":   result,
+		"result": a,
+	})
 }
 
 func UploadToS3(c echo.Context, filename string, src multipart.File) (string, error) {
