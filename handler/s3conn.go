@@ -37,10 +37,11 @@ func Upload(c echo.Context) error {
 	// 그리고 그 result 를 기반으로 ffprobe 로 메타데이터를 뽑아오고
 	// data 에다가 정보 추가
 
-	a := FFprobe(result)
+	resultProbe := FFprobe(result)
 	return c.JSON(http.StatusOK, echo.Map{
-		"path":   result,
-		"result": a,
+		"path": result,
+		// 일단 format 만 가져오게끔 해놓음..
+		"result": resultProbe["format"],
 	})
 }
 
