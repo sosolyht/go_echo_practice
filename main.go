@@ -23,6 +23,7 @@ func main() {
 	e.POST("/boards", handler.CreateBoard)
 	e.GET("/crud", handler.Get)
 	e.POST("/crud", handler.Post)
+	e.PUT("/crud", handler.Update)
 
 	// 유저 생성
 	e.POST("/sign-up", handler.SignUp)

@@ -8,6 +8,7 @@ import (
 )
 
 type Media struct {
+	Id         int    `json:"id"`
 	Title      string `json:"title"`
 	Size       string `json:"size"`
 	Codec      string `json:"codec"`
@@ -46,6 +47,24 @@ func Post(c echo.Context) error {
 	if err != nil {
 		log.Debug(err)
 	}
+	return c.JSON(http.StatusCreated, echo.Map{
+		"message": "success",
+	})
+}
+
+func Update(c echo.Context) error {
+	var binder Media
+	err := c.Bind(&binder)
+	if err != nil {
+		log.Debug(err)
+	}
+
+	newMedia := model.Media{
+		Id:    binder.Id,
+		Title: binder.Title,
+	}
+
+	db.Select("id", "title").Updates(&newMedia)
 	return c.JSON(http.StatusCreated, echo.Map{
 		"message": "success",
 	})
