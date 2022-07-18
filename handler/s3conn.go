@@ -8,25 +8,28 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	"github.com/sirupsen/logrus"
 	"mime/multipart"
 	"net/http"
 	"os"
 )
 
+var log = logrus.New()
+
 func Upload(c echo.Context) error {
 	file, err := c.FormFile("file")
 	if err != nil {
-		return err
+		log.Debug()
 	}
 
 	src, err := file.Open()
 	if err != nil {
-		return err
+		log.Debug(err)
 	}
 	defer src.Close()
-	result, err := UploadToS3(c, file.Filename, src)
+	result, err := UploadToS3(file.Filename, src)
 	if err != nil {
-		return err
+		log.Debug(err)
 	}
 	//fmt.Println("result:", result)
 	// result 를 기반으로 UploadResult 구조체에
@@ -41,7 +44,7 @@ func Upload(c echo.Context) error {
 	})
 }
 
-func UploadToS3(c echo.Context, filename string, src multipart.File) (string, error) {
+func UploadToS3(filename string, src multipart.File) (string, error) {
 
 	err := godotenv.Load(".env")
 	if err != nil {
@@ -50,11 +53,9 @@ func UploadToS3(c echo.Context, filename string, src multipart.File) (string, er
 
 	s3BucketName := os.Getenv("BUCKET_NAME")
 
-	logger := c.Logger()
 	cfg, err := config.LoadDefaultConfig(context.TODO())
 	if err != nil {
-		logger.Fatal(err)
-		return "", err
+		log.Debug(err)
 	}
 	client := s3.NewFromConfig(cfg)
 	uploader := manager.NewUploader(client)
@@ -64,8 +65,7 @@ func UploadToS3(c echo.Context, filename string, src multipart.File) (string, er
 		Body:   src,
 	})
 	if err != nil {
-		logger.Fatal(err)
-		return "", err
+		log.Debug(err)
 	}
 	return result.Location, nil
 }
