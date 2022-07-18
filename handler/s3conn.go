@@ -37,8 +37,10 @@ func Upload(c echo.Context) error {
 	// data 에다가 정보 추가
 
 	resultProbe := FFprobe(result)
+	resultMpeg := FFmpeg(result)
 	return c.JSON(http.StatusOK, echo.Map{
-		"path": result,
+		"path":  result,
+		"thumb": resultMpeg,
 		// 일단 format 만 가져오게끔 해놓음..
 		"result": resultProbe["format"],
 	})
