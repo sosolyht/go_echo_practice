@@ -5,6 +5,7 @@ import (
 	"github.com/labstack/echo/v4/middleware"
 	"go_echo/config"
 	"go_echo/handler"
+	"go_echo/handler/cognito"
 	mw "go_echo/middleware"
 )
 
@@ -40,6 +41,9 @@ func main() {
 	// S3 test
 	e.Static("/s3", "templates")
 	e.POST("/s3", handler.Upload)
+
+	// Cognito test
+	e.POST("/cognito/signup", cognito.SignUp)
 
 	// Start Server
 	e.Logger.Fatal(e.Start(":8000"))
