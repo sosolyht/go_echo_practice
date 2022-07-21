@@ -6,6 +6,7 @@ import (
 	idp "github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider"
 	"github.com/joho/godotenv"
 	"github.com/labstack/echo/v4"
+	"github.com/labstack/gommon/log"
 	"go_echo/util"
 	"net/http"
 	"os"
@@ -20,6 +21,10 @@ type (
 	ConfirmSignUpRequest struct {
 		ConfirmCode string `json:"confirm_code"`
 		Email       string `json:"email"`
+	}
+
+	AdminUserDeleteRequest struct {
+		Email string `json:"email"`
 	}
 )
 
@@ -38,7 +43,7 @@ func SignUp(c echo.Context) error {
 		Password: aws.String(binder.Password),
 	}
 
-	response, err := util.CognitoConnect().SignUp(context.TODO(), awsReq)
+	_, err := util.CognitoConnect().SignUp(context.TODO(), awsReq)
 	if err != nil {
 		c.Logger().Error(err)
 		return c.JSON(http.StatusBadRequest, echo.Map{
@@ -49,7 +54,6 @@ func SignUp(c echo.Context) error {
 
 	return c.JSON(http.StatusOK, echo.Map{
 		"message": "Success",
-		"result":  response,
 	})
 }
 
@@ -73,4 +77,23 @@ func ConfirmSignUp(c echo.Context) error {
 		"result":  response,
 	})
 
+}
+
+func AdminUserDelete(c echo.Context) error {
+	godotenv.Load(".env")
+	var binder AdminUserDeleteRequest
+	c.Bind(&binder)
+	awsReq := &idp.AdminDeleteUserInput{
+		UserPoolId: aws.String(os.Getenv("POOL_ID")),
+		Username:   aws.String(binder.Email),
+	}
+
+	_, err := util.AdminCognitoConnect().AdminDeleteUser(context.TODO(), awsReq)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	return c.JSON(http.StatusOK, echo.Map{
+		"message": "Delete success",
+	})
 }
