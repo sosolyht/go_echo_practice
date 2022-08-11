@@ -16,6 +16,7 @@ type BoardRequestBody struct {
 }
 
 func CreateBoard(c echo.Context) error {
+
 	var binder BoardRequestBody
 	err := c.Bind(&binder)
 	if err != nil {

@@ -7,6 +7,7 @@ import (
 
 func BadRequestResponseWithLog(c echo.Context, cause error) error {
 	c.Logger().Debug(cause)
+	c.Response()
 	return c.JSON(http.StatusBadRequest, echo.Map{
 		"message": cause.Error(),
 	})

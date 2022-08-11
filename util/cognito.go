@@ -37,19 +37,3 @@ func AdminCognitoConnect() *idp.Client {
 	client := idp.NewFromConfig(cfg)
 	return client
 }
-
-//	staticProvider := credentials.NewStaticCredentialsProvider(
-//		os.Getenv("ACCESS_KEY"),
-//		os.Getenv("SECRET_KEY"),
-//		"")
-//	cfg, err := config.LoadDefaultConfig(context.TODO(),
-//		config.WithCredentialsProvider(staticProvider),
-//	)
-//
-//	if err != nil {
-//		log.Fatal(err)
-//	}
-//
-//	client := idp.NewFromConfig(cfg)
-//	return client
-//}

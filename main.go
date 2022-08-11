@@ -45,8 +45,12 @@ func main() {
 	// Cognito test
 	e.POST("/cognito/signup", cognito.SignUp)
 	e.POST("/cognito/confirm", cognito.ConfirmSignUp)
-	e.POST("/cognito/delete", cognito.AdminUserDelete)
+	e.DELETE("/cognito/delete", cognito.AdminUserDelete)
 	e.GET("/cognito/users", cognito.UserList)
+	e.GET("/cognito/userlist", cognito.UserListGroup)
+
+	// Resend
+	e.POST("/cognito/resend", cognito.ResendEmail)
 
 	// Start Server
 	e.Logger.Fatal(e.Start(":8000"))
